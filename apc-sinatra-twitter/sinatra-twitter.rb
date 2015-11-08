@@ -1,9 +1,9 @@
-require 'rubygems'
+# require 'rubygems'
 require 'twitter'
 require 'sinatra/base'
 require 'redis'
-require 'json'
-require 'uri'
+# require 'json'
+# require 'uri'
 
 class WhoFollows < Sinatra::Base
 

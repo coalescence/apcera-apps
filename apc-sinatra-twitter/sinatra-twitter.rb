@@ -4,8 +4,9 @@ require 'redis'
 
 class WhoFollows < Sinatra::Base
 
-configure do
+  configure do
     enable :sessions
+    enable :logging
     set :public_folder, Proc.new { File.join(__dir__, 'static') }
 
     if (ENV['REDIS_URI']).nil?
@@ -26,51 +27,51 @@ configure do
       config.access_token        = ENV['TW_ACCESS_TOKEN']
       config.access_token_secret = ENV['TW_ACCESS_TOKEN_SECRET']
     end
-end
+  end
 
-helpers do
+  helpers do
     def twitter_id(screen_name)
-        TWITTER_CLIENT.user(screen_name).id
+      TWITTER_CLIENT.user(screen_name).id
     end
 
     def is_following?(a,b)
-        followers = TWITTER_CLIENT.follower_ids(twitter_id(b)).to_a
-        followers.include?(twitter_id(a))
+      followers = TWITTER_CLIENT.follower_ids(twitter_id(b)).to_a
+      followers.include?(twitter_id(a))
     end
 
     def update_leaderboard(a,b)
-        a_score = REDIS_CLIENT.hincrby 'user:scores', a, 1
-        b_score = REDIS_CLIENT.hincrby 'user:scores', b, 1
-        REDIS_CLIENT.zadd 'high:scores', a_score, a
-        REDIS_CLIENT.zadd 'high:scores', b_score, b
+      a_score = REDIS_CLIENT.hincrby 'user:scores', a, 1
+      b_score = REDIS_CLIENT.hincrby 'user:scores', b, 1
+      REDIS_CLIENT.zadd 'high:scores', a_score, a
+      REDIS_CLIENT.zadd 'high:scores', b_score, b
     end
 
     def get_leaders
-        REDIS_CLIENT.zrevrangebyscore('high:scores', '+inf', '-inf')[0..9]
+      REDIS_CLIENT.zrevrangebyscore('high:scores', '+inf', '-inf')[0..9]
     end
-end
+  end
 
-get '/' do
+  get '/' do
     @leaders = get_leaders
     erb :index
-end
+  end
 
-get '/follows' do
+  get '/follows' do
     @user1 = params[:user1]
     @user2 = params[:user2]
     @following = is_following?(@user1, @user2)
     update_leaderboard(@user1, @user2)
     erb :follows
-end
+  end
 
-get '/cleardb' do
+  get '/cleardb' do
     REDIS_CLIENT.flushdb
     redirect to('/'), 303
-end
+  end
 
-error do
+  error do
     @error = env['sinatra.error']
     erb :error
-end
+  end
 
 end

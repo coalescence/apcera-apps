@@ -1,4 +1,4 @@
-## Who Follows?
+# Who Follows?
 
 A simple Sinatra/Redis app - does one Twitter user follow another?
 

@@ -1,9 +1,6 @@
-# require 'rubygems'
 require 'twitter'
 require 'sinatra/base'
 require 'redis'
-# require 'json'
-# require 'uri'
 
 class WhoFollows < Sinatra::Base
 
@@ -15,10 +12,6 @@ configure do
       REDIS_CLIENT = Redis.new(:host => 'localhost', :port => 6379)
     else
       uri = URI(ENV['REDIS_URI'])
-      # services = JSON.parse(ENV['VCAP_SERVICES'])
-      # redis_key = services.keys.select { |svc| svc =~ /redis/i }.first
-      # redis = services[redis_key].first['credentials']
-      # redis_conf = {host: redis['hostname'], port: redis['port'], password: redis['password']}
       redis_conf = {
           host: uri.host,
           port: uri.port,

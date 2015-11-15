@@ -26,6 +26,8 @@ Limitations:
 
 - The app queries the Twitter [GET followers/ids](https://dev.twitter.com/docs/api/1.1/get/followers/ids) REST endpoint, which is [rate-limited](https://dev.twitter.com/docs/rate-limiting/1.1/limits) to 15 calls in a 15 minute window, so it cannot be used heavily. This is just a demonstration of some simple API functionality.  
 
+<img src="https://github.com/coalescence/apcera-sample-apps/tree/master/apc-sinatra-twitter/static/demo.png">
+
 ## Deploying the App
 
 ###Overview

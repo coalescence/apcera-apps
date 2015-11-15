@@ -20,26 +20,24 @@ follow <div class="input-group"><span class="input-group-addon">@</span><input t
   </table>
 </div>
 
-<!-- hide details if not running on Apcera -->
-<%
-   app_hash = {
-           fqn: ENV['CNTM_JOB_FQN'],
-           uuid: ENV['CNTM_JOB_UUID'],
-           instance_id: ENV['CNTM_INSTANCE_UUID'],
-           host_info: ENV['CNTM_HOST_PORT']
-   }
-   unless app_hash['fqn'].nil? %>
-
-<div class="well well-sm" style="width: 60%">
-  <%= "<h5>Application job name: #{app_hash['fqn']}</h5>" %>
-</div>
-<div class="well well-sm" style="width: 60%">
-  <%= "<h5>Job UUID: #{app_hash['uuid']}</h5>" %>
-</div>
-<div class="well well-sm" style="width: 60%">
-  <%= "<h5>Instance ID: #{app_hash['instance_id']}</h5>" %>
-</div>
-<div class="well well-sm" style="width: 60%">
-  <%= "<h5>Running on host: #{app_hash['host_info']}</h5>" %>
-</div>
-<% end %>
+<div id="apc_environment" class="well well-sm" style="width: 60%">
+  <img src="https://www.apcera.com/sites/default/files/apcera_logo_0.png">
+  <h3>Job Details</h3>
+  <table class="table table-striped" style="width: 80%">
+    <tr>
+      <td>Application job name</td>
+      <%= "<td>#{ENV['CNTM_JOB_FQN']}</td>" %>
+    </tr>
+    <tr>
+      <td>Job UUID</td>
+      <%= "<td>#{ENV['CNTM_JOB_UUID']}</td>" %>
+    </tr>
+    <tr>
+      <td>Instance ID</td>
+      <%= "<td>#{ENV['CNTM_INSTANCE_UUID']}</td>" %>
+    </tr>
+    <tr>
+      <td>Running on host</td>
+      <%= "<td>#{ENV['CNTM_HOST_PORT']}</td>" %>
+    </tr>
+  </table>

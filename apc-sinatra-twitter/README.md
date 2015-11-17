@@ -2,7 +2,7 @@
 
 A simple Sinatra/Redis app - does one Twitter user follow another?
 
-<img src="https://github.com/coalescence/apcera-sample-apps/tree/master/apc-sinatra-twitter/static/demo.png">
+<img src="https://github.com/coalescence/apcera-sample-apps/blob/master/apc-sinatra-twitter/static/demo.png">
 
 ## Overview
 

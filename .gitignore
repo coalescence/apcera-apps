@@ -35,7 +35,8 @@ build/
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
-### OSX template
+
+### OS X template
 .DS_Store
 .AppleDouble
 .LSOverride

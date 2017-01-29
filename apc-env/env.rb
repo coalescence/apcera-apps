@@ -29,7 +29,7 @@ get '/' do
   res << "<h3>HTTP Request Headers</h3>"
   res << "<div class=\"well well-sm\" style=\"width: 80%\"><table class=\"table table-striped\" style=\"width: 100%\">"
   env.inject({}){|acc, (k,v)| acc[$1.downcase] = v if k =~ /^http_(.*)/i; acc}.sort.each do |k,v|
-    res << "<tr><td style=\"width: 30%\"><strong>#{k}</strong></td><td>#{v}</td></tr>"
+    res << "<tr><td style=\"width: 30%\"><strong>#{k.gsub("_","-")}</strong></td><td>#{v}</td></tr>"
   end
   res << "</table></div></body></html>"
 end

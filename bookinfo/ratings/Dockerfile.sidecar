@@ -1,4 +1,4 @@
-# Copyright 2017 Data Blue, LLC
+# Copyright 2016 IBM Corporation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -12,26 +12,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-name: "music-dev"
-namespace: "/sandbox/developer"
-instances: 1
-resources {
-  memory: "512MB"
-}
-package_dependencies: [
-  "runtime.java-1.7.0-u101"
-]
-path: "/Users/dwilliams/coalescence/apcera-apps/apc-spring-music/build/libs"
-ports: [
-  {
-    number: 0,
-    routes: [
-      {
-        type: "http",
-        endpoint: "music-dev.dev.wgcloud.net",
-        weight: 100.0
-      },
-    ]
-  }
-]
-start: true
+FROM node:4-onbuild
+
+ARG A8_SIDECAR_RELEASE
+
+COPY ${A8_SIDECAR_RELEASE}.tar.gz /opt/microservices/
+RUN tar -xzf /opt/microservices/${A8_SIDECAR_RELEASE}.tar.gz -C /
+
+EXPOSE 9080
+
+ENTRYPOINT ["a8sidecar", "node", "ratings.js", "9080"]

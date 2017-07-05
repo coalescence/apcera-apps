@@ -1,0 +1,117 @@
+{
+  "jobs": {
+    "job::/dev::zookeeper-node1": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::zookeeper-3.4.10" }
+      ],
+      "env": {
+        "ZK_CLUSTERED": "true",
+        "ZK_CLUSTER_SIZE": "3",
+        "ZK_NODE_ID": "1"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 2181, 2888, 3888 ],
+      "services": {
+        "ZKDATA": {
+					"fqn": "service::/dev/services::zk-node1-data",
+					"params": {
+						"mountpath": "/opt/apache/zookeeper-3.4.10/data"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/zookeeper-3.4.10/custom_scripts/start-zk.sh"
+      }
+    },
+    "job::/dev::zookeeper-node2": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::zookeeper-3.4.10" }
+      ],
+      "env": {
+        "ZK_CLUSTERED": "true",
+        "ZK_CLUSTER_SIZE": "3",
+        "ZK_NODE_ID": "2"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 2181, 2888, 3888 ],
+      "services": {
+        "ZKDATA": {
+					"fqn": "service::/dev/services::zk-node2-data",
+					"params": {
+						"mountpath": "/opt/apache/zookeeper-3.4.10/data"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/zookeeper-3.4.10/custom_scripts/start-zk.sh"
+      }
+    },
+    "job::/dev::zookeeper-node3": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::zookeeper-3.4.10" }
+      ],
+      "env": {
+        "ZK_CLUSTERED": "true",
+        "ZK_CLUSTER_SIZE": "3",
+        "ZK_NODE_ID": "3"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 2181, 2888, 3888 ],
+      "services": {
+        "ZKDATA": {
+					"fqn": "service::/dev/services::zk-node3-data",
+					"params": {
+						"mountpath": "/opt/apache/zookeeper-3.4.10/data"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/zookeeper-3.4.10/custom_scripts/start-zk.sh"
+      }
+    }
+  },
+  "networks": {
+    "network::/dev::kafka-net-dev": {
+      "jobs": [
+        {
+          "fqn": "job::/dev::zookeeper-node1",
+          "discovery_address": "zookeeper-node1"
+        },
+        {
+          "fqn": "job::/dev::zookeeper-node2",
+          "discovery_address": "zookeeper-node2"
+        },
+        {
+          "fqn": "job::/dev::zookeeper-node3",
+          "discovery_address": "zookeeper-node3"
+        }
+      ]
+    }
+  },
+  "services": {
+    "service::/dev/services::zk-node1-data": {
+      "description": "Zookeeper Node 1 - Data",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    },
+    "service::/dev/services::zk-node2-data": {
+      "description": "Zookeeper Node 2 - Data",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    },
+    "service::/dev/services::zk-node3-data": {
+      "description": "Zookeeper Node 3 - Data",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    }
+  }
+}

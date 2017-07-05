@@ -1,0 +1,117 @@
+{
+  "jobs": {
+    "job::/dev::kafka-node1": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::kafka_2.12-0.10.2.1" }
+      ],
+      "env": {
+        "KAFKA_ZOOKEEPER_CONNECT": "zookeeper-node1.apcera.local",
+        "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://kafka-node1.apcera.local:9092",
+        "KAFKA_JVM_PERFORMANCE_OPTS": "-Djava.net.preferIPv4Stack=true "
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 9092 ],
+      "services": {
+        "KFKA_NODE1_DATA": {
+					"fqn": "service::/dev/services::kafka-node1-data",
+					"params": {
+						"mountpath": "/opt/apache/kafka_2.12-0.10.2.1/logs"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/kafka_2.12-0.10.2.1/custom_scripts/start-kafka.sh"
+      }
+    },
+    "job::/dev::kafka-node2": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::kafka_2.12-0.10.2.1" }
+      ],
+      "env": {
+        "KAFKA_ZOOKEEPER_CONNECT": "zookeeper-node2.apcera.local",
+        "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://kafka-node2.apcera.local:9092",
+        "KAFKA_JVM_PERFORMANCE_OPTS": "-Djava.net.preferIPv4Stack=true "
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 9092 ],
+      "services": {
+        "KFKA_NODE2_DATA": {
+					"fqn": "service::/dev/services::kafka-node2-data",
+					"params": {
+						"mountpath": "/opt/apache/kafka_2.12-0.10.2.1/logs"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/kafka_2.12-0.10.2.1/custom_scripts/start-kafka.sh"
+      }
+    },
+    "job::/dev::kafka-node3": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::kafka_2.12-0.10.2.1" }
+      ],
+      "env": {
+        "KAFKA_ZOOKEEPER_CONNECT": "zookeeper-node3.apcera.local",
+        "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://kafka-node3.apcera.local:9092",
+        "KAFKA_JVM_PERFORMANCE_OPTS": "-Djava.net.preferIPv4Stack=true "
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 9092 ],
+      "services": {
+        "KFKA_NODE3_DATA": {
+					"fqn": "service::/dev/services::kafka-node3-data",
+					"params": {
+						"mountpath": "/opt/apache/kafka_2.12-0.10.2.1/logs"
+					}
+				}
+      },
+      "start": {
+        "cmd": "/opt/apache/kafka_2.12-0.10.2.1/custom_scripts/start-kafka.sh"
+      }
+    }
+  },
+  "networks": {
+    "network::/dev::kafka-net-dev": {
+      "jobs": [
+        {
+          "fqn": "job::/dev::kafka-node1",
+          "discovery_address": "kafka-node1"
+        },
+        {
+          "fqn": "job::/dev::kafka-node2",
+          "discovery_address": "kafka-node2"
+        },
+        {
+          "fqn": "job::/dev::kafka-node3",
+          "discovery_address": "kafka-node3"
+        }
+      ]
+    }
+  },
+  "services": {
+    "service::/dev/services::kafka-node1-data": {
+      "description": "Kafka Node 1 - Logs",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    },
+    "service::/dev/services::kafka-node2-data": {
+      "description": "Kafka Node 2 - Logs",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    },
+    "service::/dev/services::kafka-node3-data": {
+      "description": "Kafka Node 3 - Logs",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    }
+  }
+}

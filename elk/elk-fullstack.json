@@ -1,0 +1,126 @@
+{
+  "jobs": {
+    "job::/dev::elasticsearch-node1": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::elasticsearch-5.4.1" }
+      ],
+      "env": {
+        "ES_CLUSTER_NAME": "wgcloud",
+        "ES_DISCOVERY_HOSTNAME": "elasticsearch",
+        "ES_JAVA_OPTS": "-Xms1g -Xmx1g"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 9200, 9300 ],
+      "required_ports": [ 9200 ],
+      "services": {
+        "EGRESS": {
+          "fqn": "service::/apcera::outside"
+        },
+        "ESDATA": {
+          "fqn": "service::/dev/services::es-node1-data",
+          "params": {
+            "mountpath": "/opt/elastic/elasticsearch-5.4.1/data"
+          }
+        }
+      },
+      "start": {
+        "cmd": "/opt/elastic/elasticsearch-5.4.1/custom_scripts/start-es.sh",
+        "timeout" : 600
+      },
+      "stop": {
+        "cmd": "sudo kill -SIGTERM $(jps | grep Elasticsearch | awk '{print $1}')",
+        "timeout" : 60
+      }
+    },
+    "job::/dev::logstash-node1": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::logstash-5.4.1" }
+      ],
+      "env": {
+        "ES_HOST": "elasticsearch.apcera.local",
+        "LS_JAVA_OPTS": "-Xms1g -Xmx1g",
+        "LS_PIPELINE": "syslog"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "1280MB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 5000 ],
+      "required_ports": [ 5000 ],
+      "routes": [
+        {
+          "config": [
+            {
+                "port": 5000
+            }
+          ],
+          "endpoint": "auto",
+          "type": "tcp"
+        }
+      ],
+      "start": {
+        "cmd": "/opt/elastic/logstash-5.4.1/custom_scripts/start-ls.sh",
+        "timeout" : 120
+      }
+    },
+    "job::/dev::kibana": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::kibana-5.4.1" }
+      ],
+      "resources": {
+        "cpu": "0",
+        "memory": "2GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 5601 ],
+      "required_ports": [ 5601 ],
+      "routes": [
+        {
+          "type": "http",
+          "endpoint": "kibana.dev.wgcloud.net",
+          "config": {
+            "/": [
+              {
+                "weight": 100,
+                "port": 5601
+              }
+            ]
+          }
+        }
+      ],
+      "start": {
+        "cmd": "/opt/elastic/kibana-5.4.1/custom_scripts/start-kibana.sh",
+        "timeout" : 300
+      }
+    }
+  },
+  "networks": {
+    "network::/dev::elk-net-dev": {
+      "jobs": [
+        {
+          "fqn": "job::/dev::elasticsearch-node1",
+          "discovery_address": "elasticsearch"
+        },
+        {
+          "fqn": "job::/dev::logstash-node1",
+          "discovery_address": "logstash"
+        },
+        {
+          "fqn": "job::/dev::kibana",
+          "discovery_address": "kibana"
+        }
+      ]
+    }
+  },
+  "services": {
+    "service::/dev/services::es-node1-data": {
+      "description": "Elasticsearch Node 1 - Data",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    }
+  }
+}

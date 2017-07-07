@@ -1,0 +1,51 @@
+{
+  "jobs": {
+    "job::/dev::artifactory": {
+      "packages": [
+        { "fqn": "package::/wg/pkg/packages::jfrog-artifactory-oss-5.4.3" }
+      ],
+      "env": {
+        "JAVA_HEAP_SIZE": "2048"
+      },
+      "resources": {
+        "cpu": "0",
+        "memory": "3GB"
+      },
+      "ssh": true,
+      "exposed_ports": [ 8081 ],
+      "required_ports": [ 8081 ],
+      "routes": [
+        {
+          "type": "http",
+          "endpoint": "artifactory.dev.wgcloud.net",
+          "config": {
+            "/": [
+              {
+                "weight": 100,
+                "port": 8081
+              }
+            ]
+          }
+        }
+      ],
+      "services": {
+        "ARTIFACTORYDATA": {
+          "fqn": "service::/dev/services::artifactory-data",
+          "params": {
+            "mountpath": "/opt/jfrog/artifactory-oss-5.4.3/data"
+          }
+        }
+      },
+      "start": {
+        "cmd": "sudo $ARTIFACTORY_HOME/bin/artifactoryctl start",
+        "timeout" : 60
+      }
+    }
+  },
+  "services": {
+    "service::/dev/services::artifactory-data": {
+      "description": "JFrog Artifactory - Data",
+      "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    }
+  }
+}

@@ -40,6 +40,9 @@
           "params": {
             "mountpath": "/opt/jfrog/artifactory-oss-5.4.3/access"
           }
+        },
+        "ARTIFACTORY_DB": {
+          "fqn": "service::/dev/services::artifactory-db"
         }
       },
       "start": {
@@ -56,6 +59,10 @@
     "service::/dev/services::artifactory-access": {
       "description": "JFrog Artifactory - Access",
       "provider_fqn": "provider::/wg/providers::apcfs-ha"
+    },
+    "service::/dev/services::artifactory-db": {
+      "description": "JFrog Artifactory - MySQL Database",
+      "provider_fqn": "provider::/wg/providers::mysql-5.7.18"
     }
   }
 }

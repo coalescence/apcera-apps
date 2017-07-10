@@ -14,8 +14,6 @@
         "memory": "2GB"
       },
       "ssh": true,
-      "exposed_ports": [ 9200, 9300 ],
-      "required_ports": [ 9200 ],
       "services": {
         "EGRESS": {
           "fqn": "service::/apcera::outside"
